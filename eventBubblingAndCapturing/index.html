@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../globalStyles.css" />
+    <title>Event Bubbling and Capturing</title>
+    <style>
+      .box:hover {
+        border: 1px solid #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button onclick="history.back()" id="go-back-btn">&#10094; Back</button>
+      <h1>Event Bubbling and Capturing</h1>
+    </nav>
+    <section>
+      <div class="box">
+        outside
+        <div class="box">
+          middle
+          <div class="box">inside</div>
+        </div>
+      </div>
+      <div id="output-container"></div>
+      <button id="clear-output-btn">Clear Output</button>
+    </section>
+
+    <script>
+      const container = document.querySelector('section');
+      const boxes = document.querySelectorAll('.box');
+      const outputContainer = document.getElementById('output-container');
+      const clearOutputBtn = document.getElementById('clear-output-btn');
+
+      // Style container
+      container.style.width = '100vw';
+      container.style.display = 'flex';
+      container.style.justifyContent = 'center';
+
+      // Style outputContainer
+      outputContainer.style.margin = '0 10px 0 35px';
+      outputContainer.style.border = '1px solid #eee';
+      outputContainer.style.width = '200px';
+      outputContainer.style.textAlign = 'center';
+      outputContainer.style.padding = '5px 0px';
+      outputContainer.style.backgroundColor = '#141414';
+
+      // Output Header
+      const outputHeader = document.createElement('h2');
+      outputHeader.style.marginBottom = '5px';
+      outputHeader.style.fontSize = '18px';
+      outputHeader.innerText = 'Output';
+      outputHeader.style.color = '#eee';
+
+      outputContainer.append(outputHeader);
+
+      const red = '#cf1010';
+      const green = '#158315';
+      const yellow = '#af8b00';
+      const blue = '#71c5ff';
+      const pink = '#ff9ce7';
+
+      const colors = [green, yellow, red];
+      const names = ['outside', 'middle', 'inside'];
+
+      for (let i = 0; i < boxes.length; i++) {
+        const box = boxes[i];
+
+        box.style.backgroundColor = colors[i];
+        box.style.color = 'white';
+        box.style.height = '80px';
+        box.style.width = '120px';
+        box.style.padding = '5px 10px';
+        box.style.margin = '5px';
+        box.style.cursor = 'pointer';
+
+        box.value = names[i];
+
+        // (eventName: 'Bubbling' | 'Capturing') => void
+        const displayOutput = (eventName) => {
+          const content = document.createElement('p');
+          content.innerText = `${eventName}:  ${box.value}`;
+          content.style.color = eventName === 'Bubbling' ? blue : pink;
+          outputContainer.append(content);
+        };
+
+        // default value of the 3rd argument is false
+        // So, Bubbling is the default behavior
+        // example:
+        // element.addEventListener('click', callback)
+        // equals to
+        // element.addEventListener('click', callback, false)
+        box.addEventListener('click', () => displayOutput('Bubbling'), false);
+        box.addEventListener('click', () => displayOutput('Capturing'), true);
+      }
+
+      clearOutputBtn.style.padding = '10px';
+      clearOutputBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        outputContainer.innerText = '';
+        outputContainer.append(outputHeader);
+      });
+    </script>
+  </body>
+</html>
